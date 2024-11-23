@@ -6,20 +6,26 @@ struct NewItemInputView: View {
     @State private var newItemName: String = "" // Eingabefeld
 
     var body: some View {
-        HStack {
-            TextField("Neues Produkt eingeben", text: $newItemName)
-                .textFieldStyle(RoundedBorderTextFieldStyle()) // Optischer Stil
-                .padding(.vertical, 8)
-
-            Button(action: addItem) {
-                Image(systemName: "plus.circle") // Plus-Symbol
-                    .foregroundColor(.blue)
-                    .padding()
-                    .font(.system(size: 36))
-            }.contentShape(Rectangle())
-            .disabled(newItemName.trimmingCharacters(in: .whitespaces).isEmpty) // Deaktiviert, wenn leer
+        VStack(spacing: 0){
+            Divider()
+            HStack {
+                TextField("Neues Produkt eingeben", text: $newItemName)
+                    .padding(10) // Innenabstand für mehr Platz
+                       .background(Color(.systemGray6)) // Hintergrundfarbe für das Textfeld
+                       .clipShape(Capsule()) // Runde Ecken im iOS-Stil
+                
+                Button(action: addItem) {
+                    Image(systemName: "plus.circle") // Plus-Symbol
+                        .foregroundColor(.blue)
+                        .padding()
+                        .font(.system(size: 36))
+                }
+                .contentShape(Rectangle())
+                .disabled(newItemName.trimmingCharacters(in: .whitespaces).isEmpty) // Deaktiviert, wenn leer
+            }
+            .padding(.horizontal) // Nur horizontales Padding beibehalten
+            .padding(.top, 0) // Oberes Padding der gesamten View auf 0 setzen
         }
-        .padding()
     }
 
     // Neue Items hinzufügen

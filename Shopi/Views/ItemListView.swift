@@ -14,6 +14,7 @@ struct ItemListView: View {
     
     var body: some View {
         List {
+            
             ForEach(items) { item in
                 HStack {
                     EditableText(item: item) // Item-Namen anzeigen
@@ -23,6 +24,8 @@ struct ItemListView: View {
             }
             .onDelete(perform: deleteItems) // Swipe-to-Delete aktivieren
         }
+        .scrollContentBackground(.hidden) // Entfernt den Hintergrund der List
+        .background(Color(.separator))
     }
     
     // ### ITEM EDITIEREN ###

@@ -12,13 +12,13 @@
 					<key>EndingColumnNumber</key>
 					<string>0</string>
 					<key>EndingLineNumber</key>
-					<string>20</string>
+					<string>21</string>
 					<key>StartingColumnNumber</key>
-					<string>28</string>
+					<string>0</string>
 					<key>StartingLineNumber</key>
-					<string>19</string>
+					<string>20</string>
 					<key>Timestamp</key>
-					<string>754087818.291</string>
+					<string>754091398.68525</string>
 				</dict>
 				<key>rebasable-url</key>
 				<dict>
@@ -34,12 +34,12 @@
 			<key>text-context</key>
 			<dict>
 				<key>focused</key>
-				<string>
+				<string>                    Spacer()
 </string>
 				<key>leading</key>
 				<string>                HStack {
                     EditableText(item: item) // Item-Namen anzeigen
-                    Spacer()</string>
+</string>
 				<key>trailing</key>
 				<string>                    ToggleCircle() // Platzhalter für den Kreis
                 }
