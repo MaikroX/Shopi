@@ -13,18 +13,39 @@ struct ItemListView: View {
     @Environment(\.managedObjectContext) private var viewContext // Core Data Kontext
     
     var body: some View {
-        List {
-            ForEach(items) { item in
-                HStack {
-                    EditableText(item: item) // Item-Namen anzeigen
+        Group {
+            if items.isEmpty {
+                Spacer()
+                // Leerer Zustand
+                VStack {
+                    Text("Deine Einkaufsliste ist leer")
+                        .font(.headline)
+                        .foregroundColor(.gray)
+                        .padding()
                     Spacer()
-                    ToggleCircle(item: item) // Platzhalter für den Kreis
                 }
+            } else {
+                // Liste der Items
+                List {
+                    ForEach(items) { item in
+                        HStack {
+                            EditableText(item: item) // Item-Namen anzeigen
+                            Spacer()
+                            ToggleCircle(item: item) // Platzhalter für den Kreis
+                        }
+                        .swipeActions(edge: .trailing) { // Swipe-Aktionen definieren
+                            Button(role: .destructive) {
+                                deleteItem(item: item) // Einzelnes Item löschen
+                            } label: {
+                                Text("Löschen") // Angepasster Text
+                            }
+                        }
+                    }
+                }
+                .scrollContentBackground(.hidden) // Entfernt den Hintergrund der List
+                .background(Color(.separator))
             }
-            .onDelete(perform: deleteItems) // Swipe-to-Delete aktivieren
         }
-        .scrollContentBackground(.hidden) // Entfernt den Hintergrund der List
-        .background(Color(.separator))
     }
     
     // ### ITEM EDITIEREN ###
@@ -50,7 +71,7 @@ struct ItemListView: View {
                     isEditing = false // Bearbeitungsmodus beenden
                 }
             } else {
-                Text(item.name ?? "Unbenannt")
+                Text(item.name ?? "")
                     .strikethrough(item.isChecked, color: .gray) // Durchgestrichen, wenn isChecked true ist
                     .foregroundColor(item.isChecked ? .gray : .primary)
                     .animation(.easeInOut(duration: 0.3), value: item.isChecked)
@@ -62,12 +83,12 @@ struct ItemListView: View {
     }
     
     // ### ITEM LÖSCHEN ###
-    private func deleteItems(at offsets: IndexSet) {
-        offsets.map { items[$0] }.forEach(viewContext.delete)
+    private func deleteItem(item: Item) {
+        viewContext.delete(item)
         do {
             try viewContext.save() // Änderungen speichern
         } catch {
-            print("Fehler beim Löschen der Items: \(error.localizedDescription)")
+            print("Fehler beim Löschen des Items: \(error.localizedDescription)")
         }
     }
 }

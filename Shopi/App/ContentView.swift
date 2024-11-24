@@ -33,5 +33,6 @@ struct ContentView: View {
 //TODO: Zustand der Checkbox speichern ...ERLEDIGT
 //TODO: Checkbox etwas größer wie in V1 ...ERLEDIGT
 //TODO: Alle Items Löschen Funktion einbinden ... ERLEDIGT
+//TODO: Einkaufsliste ist leer design anpassen an aktuelles design
 //TODO: Überschrift mittig klein
 //TODO: IM EDIT Mode statt des grünen Circles ein blauen circle mit haken zum bestätigen des edit und das textfeld ausblenden für neues Produkt eingeben, weil verwirrend
