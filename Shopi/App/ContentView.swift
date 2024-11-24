@@ -3,25 +3,31 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext // Core Data Kontext
+    @State private var isSorting: Bool = false // Zustand für den Sortiermodus
 
     var body: some View {
         NavigationView {
             VStack(spacing: 0.0) { // Kein zusätzlicher Abstand zwischen den Views
-                ItemListView()
+                ItemListView(isSorting: $isSorting) // Binding für Sortierzustand übergeben
                     .frame(maxHeight: .infinity) // Nimmt den restlichen Platz ein
-
-                NewItemInputView()
-                    .background(Color(.systemBackground)) // Hintergrund fixieren
+                if !isSorting{
+                    NewItemInputView()
+                        .background(Color(.systemBackground)) // Hintergrund fixieren
+                }
             }
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    SortItemsView(isSorting: $isSorting) // Sortier-Button mit Binding
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    DeleteAllButtonView() // Verwende den separaten Button
+                    DeleteAllButtonView()
                 }
             }
             .navigationTitle("Einkaufsliste")
         }
     }
 }
+
 
 // Vorschau für SwiftUI
 #Preview {
@@ -30,9 +36,9 @@ struct ContentView: View {
 }
 
 
-//TODO: Zustand der Checkbox speichern ...ERLEDIGT
-//TODO: Checkbox etwas größer wie in V1 ...ERLEDIGT
-//TODO: Alle Items Löschen Funktion einbinden ... ERLEDIGT
+//TODO: Sortierung speichern auf Gerät
+//TODO: SortierungsIcon anpassen - Größe
+//TODO: Wenn sortiert wird - Text von "Einkaufsliste" ändern zu "Sortieren"
 //TODO: Einkaufsliste ist leer design anpassen an aktuelles design
 //TODO: Überschrift mittig klein
 //TODO: IM EDIT Mode statt des grünen Circles ein blauen circle mit haken zum bestätigen des edit und das textfeld ausblenden für neues Produkt eingeben, weil verwirrend

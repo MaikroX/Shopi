@@ -2,21 +2,22 @@ import SwiftUI
 import CoreData
 
 struct ItemListView: View {
-    // Core Data FetchRequest direkt in der View
+    @Binding var isSorting: Bool // Zustand für den Sortiermodus
     @FetchRequest(
         entity: Item.entity(), // Core Data-Entität
         sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: false)], // Neueste zuerst
-        animation: .default // Standardanimation
+        animation: .default
     )
     var items: FetchedResults<Item>
     
     @Environment(\.managedObjectContext) private var viewContext // Core Data Kontext
-    
+    @State private var dragItems: [Item] = [] // Temporäre Speicherung für Drag-and-Drop
+
     var body: some View {
         Group {
             if items.isEmpty {
-                Spacer()
                 // Leerer Zustand
+                Spacer()
                 VStack {
                     Text("Deine Einkaufsliste ist leer")
                         .font(.headline)
@@ -27,72 +28,53 @@ struct ItemListView: View {
             } else {
                 // Liste der Items
                 List {
-                    ForEach(items) { item in
+                    ForEach(dragItems) { item in
                         HStack {
-                            EditableText(item: item) // Item-Namen anzeigen
+                            EditableText(item: item) // Ausgelagert in separate Datei
+                                .rotationEffect(isSorting ? .degrees(-2) : .degrees(0)) // Shake-Effekt
+                                .animation(isSorting ? Animation.easeInOut(duration: 0.3).repeatForever(autoreverses: true) : .default, value: isSorting)
                             Spacer()
-                            ToggleCircle(item: item) // Platzhalter für den Kreis
+                            if !isSorting {
+                                ToggleCircle(item: item)
+                            }
                         }
-                        .swipeActions(edge: .trailing) { // Swipe-Aktionen definieren
+                        .contentShape(Rectangle()) // Macht das gesamte Listenelement klickbar
+                        .swipeActions(edge: .trailing) {
                             Button(role: .destructive) {
-                                deleteItem(item: item) // Einzelnes Item löschen
+                                deleteItem(item: item)
                             } label: {
-                                Text("Löschen") // Angepasster Text
+                                Text("Löschen")
                             }
                         }
                     }
+                    .onMove(perform: moveItems) // Drag-and-Drop aktivieren
                 }
+                .environment(\.editMode, isSorting ? .constant(.active) : .constant(.inactive)) // Sortiermodus aktivieren
                 .scrollContentBackground(.hidden) // Entfernt den Hintergrund der List
                 .background(Color(.separator))
             }
         }
-    }
-    
-    // ### ITEM EDITIEREN ###
-    struct EditableText: View {
-        @ObservedObject var item: Item // Beobachtetes Core Data-Objekt
-        @State private var isEditing: Bool = false // Zustand: Bearbeitungsmodus
-        @FocusState private var isTextFieldFocused: Bool // Fokus für TextField
-        
-        var body: some View {
-            if isEditing {
-                TextField("Unbenannt", text: Binding(
-                    get: { item.name ?? "" },
-                    set: { newValue in
-                        item.name = newValue
-                        try? item.managedObjectContext?.save() // Änderungen speichern
-                    }
-                ))
-                .focused($isTextFieldFocused)
-                .onAppear {
-                    isTextFieldFocused = true // Fokus setzen
-                }
-                .onSubmit {
-                    isEditing = false // Bearbeitungsmodus beenden
-                }
-            } else {
-                Text(item.name ?? "")
-                    .strikethrough(item.isChecked, color: .gray) // Durchgestrichen, wenn isChecked true ist
-                    .foregroundColor(item.isChecked ? .gray : .primary)
-                    .animation(.easeInOut(duration: 0.3), value: item.isChecked)
-                    .onTapGesture {
-                        isEditing = true // Bearbeitungsmodus aktivieren
-                    }
-            }
+        .onAppear {
+            dragItems = Array(items) // Items initialisieren
+        }
+        .onChange(of: items.count) {
+            dragItems = Array(items) // Drag-Liste aktualisieren
         }
     }
-    
-    // ### ITEM LÖSCHEN ###
+
+    private func moveItems(from source: IndexSet, to destination: Int) {
+        dragItems.move(fromOffsets: source, toOffset: destination)
+    }
+
     private func deleteItem(item: Item) {
         viewContext.delete(item)
         do {
-            try viewContext.save() // Änderungen speichern
+            try viewContext.save()
         } catch {
             print("Fehler beim Löschen des Items: \(error.localizedDescription)")
         }
     }
 }
-
 
 // ### KREIS wird CHECKED : UNCHECKED ###
 struct ToggleCircle: View {
