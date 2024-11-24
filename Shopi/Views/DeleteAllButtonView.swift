@@ -8,6 +8,7 @@ struct DeleteAllButtonView: View {
         sortDescriptors: []
     ) private var items: FetchedResults<Item>
     
+    @Binding var isSorting: Bool // Bindung an den Sortiermodus
     @State private var showAlert = false // Steuert die Anzeige des Alerts
     @State private var isButtonActive = false // Steuert den Aktivitätszustand des Buttons
 
@@ -16,13 +17,13 @@ struct DeleteAllButtonView: View {
             showAlert = true // Alert anzeigen
         }) {
             Label("Delete All", systemImage: "trash")
-                .foregroundColor(isButtonActive ? .blue : .gray) // Farbe je nach Zustand
+                .foregroundColor(isButtonActive && !isSorting ? .blue : .gray) // Farbe je nach Zustand
         }
-        .disabled(!isButtonActive) // Button deaktivieren, wenn nicht aktiv
+        .disabled(!isButtonActive || isSorting) // Button deaktivieren, wenn nicht aktiv oder isSorting true
         .onAppear {
             updateButtonState() // Zustand beim Laden überprüfen
         }
-        .onChange(of: items.count) {
+        .onChange(of: items.count) { 
             updateButtonState() // Zustand bei Änderungen aktualisieren
         }
         .alert("Möchtest du die Liste leeren?", isPresented: $showAlert) {

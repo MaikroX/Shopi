@@ -20,10 +20,10 @@ struct ContentView: View {
                     SortItemsView(isSorting: $isSorting) // Sortier-Button mit Binding
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    DeleteAllButtonView()
+                    DeleteAllButtonView(isSorting: $isSorting)
                 }
             }
-            .navigationTitle("Einkaufsliste")
+            .navigationTitle(isSorting ? "Sortieren" : "Einkaufsliste")
         }
     }
 }
@@ -38,7 +38,6 @@ struct ContentView: View {
 
 //TODO: Sortierung speichern auf Gerät
 //TODO: SortierungsIcon anpassen - Größe
-//TODO: Wenn sortiert wird - Text von "Einkaufsliste" ändern zu "Sortieren"
 //TODO: Einkaufsliste ist leer design anpassen an aktuelles design
 //TODO: Überschrift mittig klein
 //TODO: IM EDIT Mode statt des grünen Circles ein blauen circle mit haken zum bestätigen des edit und das textfeld ausblenden für neues Produkt eingeben, weil verwirrend
