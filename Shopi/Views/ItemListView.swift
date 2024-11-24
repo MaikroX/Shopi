@@ -19,7 +19,7 @@ struct ItemListView: View {
                 HStack {
                     EditableText(item: item) // Item-Namen anzeigen
                     Spacer()
-                    ToggleCircle() // Platzhalter für den Kreis
+                    ToggleCircle(item: item) // Platzhalter für den Kreis
                 }
             }
             .onDelete(perform: deleteItems) // Swipe-to-Delete aktivieren
@@ -52,6 +52,9 @@ struct ItemListView: View {
                 }
             } else {
                 Text(item.name ?? "Unbenannt")
+                    .strikethrough(item.isChecked, color: .gray) // Durchgestrichen, wenn isChecked true ist
+                                .foregroundColor(item.isChecked ? .gray : .primary)
+                                .animation(.easeInOut(duration: 0.3), value: item.isChecked)
                     .onTapGesture {
                         isEditing = true // Bearbeitungsmodus aktivieren
                     }
@@ -73,21 +76,32 @@ struct ItemListView: View {
 
 // ### KREIS wird CHECKED : UNCHECKED ###
 struct ToggleCircle: View {
-    @State private var isChecked: Bool = false
+    @ObservedObject var item: Item
     
     var body: some View {
         Circle()
-            .fill(isChecked ? Color.green : Color(UIColor.systemGray5))
-            .frame(width: 20, height: 20)
+            .fill(item.isChecked ? Color.green : Color(UIColor.systemGray5))
+            .frame(width: 25, height: 25)
             .overlay(
                 // Weißer Haken, nur wenn `isChecked == true`
-                isChecked ? Image(systemName: "checkmark")
+                item.isChecked ? Image(systemName: "checkmark")
                     .foregroundColor(.white) // Hakenfarbe
-                    .font(.system(size: 12, weight: .bold)) // Haken-Größe und Gewicht
+                    .font(.system(size: 15, weight: .bold)) // Haken-Größe und Gewicht
                 : nil
             )
             .onTapGesture {
-                isChecked.toggle()
+                item.isChecked.toggle() // Zustand ändern
+                saveContext() // Core Data speichern
             }
     }
+    private func saveContext() {
+        do {
+            try item.managedObjectContext?.save()
+        } catch {
+            print("Fehler beim Speichern: \(error.localizedDescription)")
+        }
+    }
 }
+
+
+

@@ -6,11 +6,11 @@ struct ContentView: View {
 
     var body: some View {
         NavigationView {
-            VStack(spacing: 0) { // Kein zusätzlicher Abstand zwischen den Views
-                ItemListView() // Liste der Items
+            VStack(spacing: 0.0) { // Kein zusätzlicher Abstand zwischen den Views
+                ItemListView()
                     .frame(maxHeight: .infinity) // Nimmt den restlichen Platz ein
 
-                NewItemInputView() // Eingabefeld für neue Items
+                NewItemInputView()
                     .background(Color(.systemBackground)) // Hintergrund fixieren
             }
             .toolbar {
@@ -33,8 +33,8 @@ struct ContentView: View {
         .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
 
-//TODO: Zustand der Checkbox speichern
-//TODO: Checkbox etwas größer wie in V1
+//TODO: Zustand der Checkbox speichern ...ERLEDIGT
+//TODO: Checkbox etwas größer wie in V1 ...Erledigt
 //TODO: Alle Items Löschen Funktion einbinden
 //TODO: Überschrift mittig klein
 //TODO: IM EDIT Mode statt des grünen Circles ein blauen circle mit haken zum bestätigen des edit und das textfeld ausblenden für neues Produkt eingeben, weil verwirrend

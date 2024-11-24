@@ -41,7 +41,7 @@
                     EditableText(item: item) // Item-Namen anzeigen
 </string>
 				<key>trailing</key>
-				<string>                    ToggleCircle() // Platzhalter für den Kreis
+				<string>                    ToggleCircle(item: item) // Platzhalter für den Kreis
                 }
             }
 </string>
