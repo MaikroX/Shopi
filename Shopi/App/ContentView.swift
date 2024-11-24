@@ -15,11 +15,7 @@ struct ContentView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        print("Alle Items löschen")
-                    }) {
-                        Label("Delete All", systemImage: "trash")
-                    }
+                    DeleteAllButtonView() // Verwende den separaten Button
                 }
             }
             .navigationTitle("Einkaufsliste")
@@ -33,8 +29,9 @@ struct ContentView: View {
         .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
 
+
 //TODO: Zustand der Checkbox speichern ...ERLEDIGT
-//TODO: Checkbox etwas größer wie in V1 ...Erledigt
-//TODO: Alle Items Löschen Funktion einbinden
+//TODO: Checkbox etwas größer wie in V1 ...ERLEDIGT
+//TODO: Alle Items Löschen Funktion einbinden ... ERLEDIGT
 //TODO: Überschrift mittig klein
 //TODO: IM EDIT Mode statt des grünen Circles ein blauen circle mit haken zum bestätigen des edit und das textfeld ausblenden für neues Produkt eingeben, weil verwirrend

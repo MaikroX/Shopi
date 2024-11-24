@@ -31,8 +31,9 @@ struct NewItemInputView: View {
     // Neue Items hinzufügen
     private func addItem() {
         let newItem = Item(context: viewContext)
-        newItem.id = UUID() // Generiere eine eindeutige ID
+        newItem.id = UUID()
         newItem.name = newItemName.trimmingCharacters(in: .whitespaces)
+        newItem.timestamp = Date() // Aktuelles Datum und Uhrzeit setzen
         do {
             try viewContext.save()
             newItemName = "" // Eingabefeld leeren
@@ -40,4 +41,5 @@ struct NewItemInputView: View {
             print("Fehler beim Hinzufügen des Items: \(error.localizedDescription)")
         }
     }
+
 }

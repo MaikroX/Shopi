@@ -5,7 +5,7 @@ struct ItemListView: View {
     // Core Data FetchRequest direkt in der View
     @FetchRequest(
         entity: Item.entity(), // Core Data-Entität
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.name, ascending: true)], // Alphabetisch sortieren
+        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: false)], // Neueste zuerst
         animation: .default // Standardanimation
     )
     var items: FetchedResults<Item>
@@ -14,7 +14,6 @@ struct ItemListView: View {
     
     var body: some View {
         List {
-            
             ForEach(items) { item in
                 HStack {
                     EditableText(item: item) // Item-Namen anzeigen
@@ -53,8 +52,8 @@ struct ItemListView: View {
             } else {
                 Text(item.name ?? "Unbenannt")
                     .strikethrough(item.isChecked, color: .gray) // Durchgestrichen, wenn isChecked true ist
-                                .foregroundColor(item.isChecked ? .gray : .primary)
-                                .animation(.easeInOut(duration: 0.3), value: item.isChecked)
+                    .foregroundColor(item.isChecked ? .gray : .primary)
+                    .animation(.easeInOut(duration: 0.3), value: item.isChecked)
                     .onTapGesture {
                         isEditing = true // Bearbeitungsmodus aktivieren
                     }
@@ -102,6 +101,3 @@ struct ToggleCircle: View {
         }
     }
 }
-
-
-
