@@ -4,16 +4,21 @@ import CoreData
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext // Core Data Kontext
     @State private var isSorting: Bool = false // Zustand für den Sortiermodus
+    @State private var isEditing: Bool = false
+
 
     var body: some View {
+        
         NavigationView {
             VStack(spacing: 0.0) { // Kein zusätzlicher Abstand zwischen den Views
                 ItemListView(isSorting: $isSorting) // Binding für Sortierzustand übergeben
                     .frame(maxHeight: .infinity) // Nimmt den restlichen Platz ein
-                if !isSorting{
+                if !isSorting {
                     NewItemInputView()
                         .background(Color(.systemBackground)) // Hintergrund fixieren
                 }
+
+                
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -25,6 +30,7 @@ struct ContentView: View {
             }
             .navigationTitle(isSorting ? "Sortieren" : "Einkaufsliste")
         }
+        
     }
 }
 

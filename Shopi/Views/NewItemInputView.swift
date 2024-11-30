@@ -8,6 +8,8 @@ struct NewItemInputView: View {
     var body: some View {
         VStack(spacing: 0){
             Divider()
+            //ausblenden wenn isEditing true ist
+            
             HStack {
                 TextField("Neues Produkt eingeben", text: $newItemName)
                     .padding(10) // Innenabstand für mehr Platz
@@ -30,10 +32,24 @@ struct NewItemInputView: View {
 
     // Neue Items hinzufügen
     private func addItem() {
+        // Neues Item erstellen
         let newItem = Item(context: viewContext)
         newItem.id = UUID()
         newItem.name = newItemName.trimmingCharacters(in: .whitespaces)
-        newItem.timestamp = Date() // Aktuelles Datum und Uhrzeit setzen
+        newItem.timestamp = Date()
+
+        // sortOrder auf die aktuelle Anzahl der Items setzen
+        let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
+        fetchRequest.resultType = .countResultType
+        do {
+            let itemCount = try viewContext.count(for: fetchRequest)
+            newItem.sortOrder = Int32(itemCount) // sortOrder basierend auf der Item-Anzahl setzen
+        } catch {
+            print("Fehler beim Abrufen der Item-Anzahl: \(error.localizedDescription)")
+            newItem.sortOrder = 0 // Fallback-Wert
+        }
+
+        // Core Data speichern
         do {
             try viewContext.save()
             newItemName = "" // Eingabefeld leeren
@@ -41,5 +57,6 @@ struct NewItemInputView: View {
             print("Fehler beim Hinzufügen des Items: \(error.localizedDescription)")
         }
     }
+
 
 }
